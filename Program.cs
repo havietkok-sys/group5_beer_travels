@@ -1,4 +1,4 @@
-using MySql.Data.MySqlClient;
+global using MySql.Data.MySqlClient;
 using server;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -26,27 +26,10 @@ app.MapGet("/users/{id}", Users.Get);
 app.MapDelete("/users/{id}", Users.Delete);
 
 // special, reset db
-app.MapDelete("/db", db_reset_to_default);
-
+app.MapDelete("/db", Database.db_reset_to_default);
 app.Run();
 
 
 
 
-async Task db_reset_to_default(Config config)
-{
 
-    // Drop all tables from database
-    await MySqlHelper.ExecuteNonQueryAsync(config.ConnectionString, "DROP TABLE IF EXISTS users");
-
-    // Create all tables
-    string users_table = """
-        CREATE TABLE users
-        (
-            id INT PRIMARY KEY AUTO_INCREMENT,
-            email varchar(256) NOT NULL UNIQUE,
-            password TEXT
-        )
-    """;
-    await MySqlHelper.ExecuteNonQueryAsync(config.ConnectionString, users_table);
-}
