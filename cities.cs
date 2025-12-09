@@ -7,12 +7,12 @@ class Cities
 
     public static async Task<List<Pub_Data>> GetPubs(string cityName, Config config)
     {
-        // 1. hitta city_id
+        //  hitta city_id
         int? cityId = await GetCityId(cityName, config);
         if (cityId is null)
             return new();
 
-        // 2. hämta pubbar
+        //  hämta pubbar
         List<Pub_Data> pubs = new();
 
         using (var reader = await MySqlHelper.ExecuteReaderAsync(
