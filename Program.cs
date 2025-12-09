@@ -16,6 +16,7 @@ var app = builder.Build();
 app.UseSession();
 
 
+
 app.MapGet("/login", Login.Get);
 app.MapPost("/login", Login.Post);
 app.MapDelete("/login", Login.Delete);
@@ -25,11 +26,17 @@ app.MapPost("/users", Users.Post);
 app.MapGet("/users/{id}", Users.Get);
 app.MapDelete("/users/{id}", Users.Delete);
 
+// Hämtar Pubbar år en specifik stad och hotelet.
+app.MapGet("/cities/{city}/pubs", Cities.GetPubs);
+app.MapGet("/cities/{city}/hotel", Cities.GetHotel);
+
+
+
+
 // special, reset db
 app.MapDelete("/db", Database.db_reset_to_default);
 app.Run();
 
-
-
-
+// Crud endpoints för databasen
+DatabaseEndpoints.Map(app);
 
