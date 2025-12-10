@@ -36,12 +36,8 @@ app.MapDelete("/users/{id}", Users.Delete);  //admin
 app.MapPost("/cities/create", Cities.CreateCity);    //admin
 app.MapDelete("/cities/{id}", Cities.DeleteCity);   //admin
 
-
-
-
-// Hämtar Pubbar år en specifik stad och hotelet.
-app.MapGet("/cities/{city}/pubs", Cities.GetPubs);
-app.MapGet("/cities/{city}/hotel", Cities.GetHotel);
+// Hämtar Pubbar ur en specifik stad och hotelet.
+app.MapGet("/cities/{city}/pubs", Pubs.GetPubs);
 
 // BEER CRUD
 app.MapPost("/beers/create", Beers.Post); //admin
@@ -51,6 +47,7 @@ app.MapDelete("/beers/{id}", Beers.Delete); //admin
 
 // Skapa hotel 
 app.MapPost("/hotels/create", Hotels.CreateHotel); //Admin
+app.MapGet("/cities/{city}/hotel", Hotels.GetHotel);
 
 
 // Pub ölernas crud
