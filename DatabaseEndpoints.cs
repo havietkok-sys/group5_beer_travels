@@ -16,8 +16,6 @@ public static class DatabaseEndpoints
         // PUB CRUD
         app.MapPost("/pubs/create", CreatePub);
 
-        // BEER CRUD
-        app.MapPost("/beers/create", CreateBeer);
 
         // PUB-BEERS CRUD
         app.MapPost("/pubs/{pubId}/addbeer", AddBeerToPub);
@@ -127,26 +125,6 @@ public static class DatabaseEndpoints
     }
 
 
-
-    // 
-    //                      BEER CRUD
-    // 
-
-    public record BeerCreate(string Name, string Type);
-
-    public static Task<IResult> CreateBeer(Config config, BeerCreate data)
-    {
-        string query = "INSERT INTO beers (name, type) VALUES (@name, @type)";
-
-        MySqlHelper.ExecuteNonQuery(
-            config.ConnectionString,
-            query,
-            new("@name", data.Name),
-            new("@type", data.Type)
-        );
-
-        return Task.FromResult(Results.Ok("Beer created") as IResult);
-    }
 
 
 
