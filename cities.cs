@@ -33,8 +33,6 @@ class Cities
         return pubs;
     }
 
-
-
     // ===== HOTEL =====
     public record Hotel_Data(int Id, string Name);
 
