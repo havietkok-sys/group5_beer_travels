@@ -1,20 +1,49 @@
+<<<<<<< HEAD
 namespace server;
 
 using MySql.Data.MySqlClient;
 
 class Users
+=======
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using MySql.Data.MySqlClient;
+
+namespace server;
+
+public class Config
+{
+    public string ConnectionString { get; set; }
+
+    public Config(string connectionString)
+    {
+        ConnectionString = connectionString;
+    }
+}
+
+
+public class Users
+>>>>>>> d8a9d54 (Added Users.cs into the database)
 {
 
 
     public record GetAll_Data(int Id, string Email, string Password);
+<<<<<<< HEAD
     public static async Task<List<GetAll_Data>>
+=======
+    public static async Task<List<GetAll_Data>> 
+>>>>>>> d8a9d54 (Added Users.cs into the database)
     GetAll(Config config)
     {
         List<GetAll_Data> result = new();
         string query = "SELECT id, email, password FROM users";
         using (var reader = await MySqlHelper.ExecuteReaderAsync(config.ConnectionString, query))
         {
+<<<<<<< HEAD
             while (reader.Read())
+=======
+            while(reader.Read())
+>>>>>>> d8a9d54 (Added Users.cs into the database)
             {
                 result.Add(new(reader.GetInt32(0), reader.GetString(1), reader.GetString(2)));
             }
@@ -23,15 +52,26 @@ class Users
     }
 
     public record Get_Data(string Email, string Password);
+<<<<<<< HEAD
     public static async Task<Get_Data?>
+=======
+    public static async Task<Get_Data?> 
+>>>>>>> d8a9d54 (Added Users.cs into the database)
     Get(int id, Config config)
     {
         Get_Data? result = null;
         string query = "SELECT email, password FROM users WHERE id = @id";
+<<<<<<< HEAD
         var parameters = new MySqlParameter[] { new("@id", id) };
         using (var reader = await MySqlHelper.ExecuteReaderAsync(config.ConnectionString, query, parameters))
         {
             if (reader.Read()) // using if instead of while since we only expect a single result from this query
+=======
+        var parameters = new MySqlParameter[]{ new("@id", id) };
+        using (var reader = await MySqlHelper.ExecuteReaderAsync(config.ConnectionString, query, parameters))
+        {
+            if(reader.Read()) // using if instead of while since we only expect a single result from this query
+>>>>>>> d8a9d54 (Added Users.cs into the database)
             {
                 result = new(reader.GetString(0), reader.GetString(1));
             }
@@ -41,7 +81,11 @@ class Users
 
 
     public record Post_Args(string Email, string Password);
+<<<<<<< HEAD
     public static async Task
+=======
+    public static async Task 
+>>>>>>> d8a9d54 (Added Users.cs into the database)
     Post(Post_Args user, Config config)
     {
         string query = """
@@ -62,7 +106,11 @@ class Users
     Delete(int id, Config config)
     {
         string query = "DELETE FROM users WHERE id = @id";
+<<<<<<< HEAD
         var parameters = new MySqlParameter[] { new("@id", id) };
+=======
+        var parameters = new MySqlParameter[]{ new("@id", id) };
+>>>>>>> d8a9d54 (Added Users.cs into the database)
 
         await MySqlHelper.ExecuteNonQueryAsync(config.ConnectionString, query, parameters);
     }
