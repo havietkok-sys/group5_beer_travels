@@ -30,6 +30,12 @@ app.MapDelete("/users/{id}", Users.Delete);
 app.MapGet("/cities/{city}/pubs", Cities.GetPubs);
 app.MapGet("/cities/{city}/hotel", Cities.GetHotel);
 
+app.MapPost("/beers/create", Beers.CreateBeer);
+app.MapGet("/beers", Beers.GetAllBeers);
+app.MapGet("/beers/{id}", Beers.GetBeer);
+app.MapDelete("/beers/{id}", Beers.DeleteBeer);
+
+
 
 
 
