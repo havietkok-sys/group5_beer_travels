@@ -1,5 +1,6 @@
 namespace server;
 
+using MySql.Data.MySqlClient;
 public static class Pubs
 {
     public record PubCreate(
@@ -37,6 +38,34 @@ public static class Pubs
         await MySqlHelper.ExecuteNonQueryAsync(config.ConnectionString, query, parameters);
 
         return Results.Ok("Pub created");
+    }
+    public record Pub_Data(int Id, string Name, string Address);
+
+    public static async Task<List<Pub_Data>>
+    GetPubs(string cityName, Config config)
+    {
+        int? cityId = await GetCityId(config, cityName);
+        if (cityId is null)
+            return new();
+
+        List<Pub_Data> pubs = new();
+
+        using (var reader = await MySqlHelper.ExecuteReaderAsync(
+            config.ConnectionString,
+            "SELECT id, name, address FROM pubs WHERE city_id = @id",
+            new MySqlParameter("@id", cityId)))
+        {
+            while (reader.Read())
+            {
+                pubs.Add(new(
+                    reader.GetInt32(0),
+                    reader.GetString(1),
+                    reader.GetString(2)
+                ));
+            }
+        }
+
+        return pubs;
     }
 
     private static async Task<int?>
