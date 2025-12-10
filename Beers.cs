@@ -1,69 +1,68 @@
 namespace server;
 
-
 public class Beers
 {
-  public record BeerCreate(string Name, string Type);
   public record BeerData(int Id, string Name, string Type);
+  public record BeerCreate(string Name, string Type);
 
-  public static Task<IResult> CreateBeer(Config config, BeerCreate data)
+  public static async Task<List<BeerData>> GetAll(Config config)
+  {
+    List<BeerData> result = new();
+    string query = "SELECT id, name, type FROM beers";
+
+    using (var reader = await MySqlHelper.ExecuteReaderAsync(config.ConnectionString, query))
+    {
+      while (reader.Read())
+      {
+        result.Add(new(
+            reader.GetInt32(0),
+            reader.GetString(1),
+            reader.GetString(2)
+        ));
+      }
+    }
+
+    return result;
+  }
+
+  public static async Task<BeerData?> Get(int id, Config config)
+  {
+    BeerData? result = null;
+    string query = "SELECT id, name, type FROM beers WHERE id = @id";
+    var parameters = new MySqlParameter[] { new("@id", id) };
+
+    using (var reader = await MySqlHelper.ExecuteReaderAsync(config.ConnectionString, query, parameters))
+    {
+      if (reader.Read())
+      {
+        result = new(
+            reader.GetInt32(0),
+            reader.GetString(1),
+            reader.GetString(2)
+        );
+      }
+    }
+
+    return result;
+  }
+
+  public static async Task Post(BeerCreate beer, Config config)
   {
     string query = "INSERT INTO beers (name, type) VALUES (@name, @type)";
-
-    MySqlHelper.ExecuteNonQuery(
-        config.ConnectionString,
-        query,
-        new("@name", data.Name),
-        new("@type", data.Type)
-    );
-
-    return Task.FromResult(Results.Ok("Beer created") as IResult);
-  }
-
-  public static Task<IResult> GetAllBeers(Config config)
-  {
-    List<BeerData> beers = new();
-
-    using var reader = MySqlHelper.ExecuteReader(
-        config.ConnectionString,
-        "SELECT id, name, type FROM beers"
-    );
-
-    while (reader.Read())
+    var parameters = new MySqlParameter[]
     {
-      beers.Add(new BeerData(
-          reader.GetInt32(0),
-          reader.GetString(1),
-          reader.GetString(2)
-      ));
-    }
-    return Task.FromResult(Results.Ok(beers) as IResult);
+            new("@name", beer.Name),
+            new("@type", beer.Type)
+    };
+
+    await MySqlHelper.ExecuteNonQueryAsync(config.ConnectionString, query, parameters);
   }
-  public static Task<IResult> GetBeer(Config config, int id)
+
+  public static async Task Delete(int id, Config config)
   {
-    using var reader = MySqlHelper.ExecuteReader(
-        config.ConnectionString,
-        "SELECT id, name, type FROM beers WHERE id = @id",
-        new MySqlParameter("@id", id)
-    );
-    if (reader.Read())
-    {
-      var beer = new BeerData(
-          reader.GetInt32(0),
-          reader.GetString(1),
-          reader.GetString(2)
-      );
-      return Task.FromResult(Results.Ok(beer) as IResult);
-    }
-    return Task.FromResult(Results.NotFound("Beer not found") as IResult);
-  }
-  public static Task<IResult> DeleteBeer(Config config, int id)
-  {
-    MySqlHelper.ExecuteNonQuery(
-        config.ConnectionString,
-        "DELETE FROM beers WHERE id = @id",
-        new MySqlParameter("@id", id)
-    );
-    return Task.FromResult(Results.Ok("Beer deleted") as IResult);
+    string query = "DELETE FROM beers WHERE id = @id";
+    var parameters = new MySqlParameter[] { new("@id", id) };
+
+    await MySqlHelper.ExecuteNonQueryAsync(config.ConnectionString, query, parameters);
   }
 }

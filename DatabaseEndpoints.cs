@@ -16,11 +16,6 @@ public static class DatabaseEndpoints
         // PUB CRUD
         app.MapPost("/pubs/create", CreatePub);
 
-        // BEER CRUD
-        app.MapPost("/beers/create", CreateBeer);
-        app.MapGet("/beers", GetAllBeers);
-        app.MapGet("/beers/{id}", GetBeer);
-        app.MapDelete("/beers/{id}", DeleteBeer);
 
         // PUB-BEERS CRUD
         app.MapPost("/pubs/{pubId}/addbeer", AddBeerToPub);
