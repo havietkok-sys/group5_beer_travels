@@ -43,6 +43,7 @@ public static class Database
                 city_id INT NOT NULL UNIQUE,
                 name VARCHAR(150) NOT NULL,
                 address VARCHAR(200),
+                distance_to_city_center_m INT NOT NULL,
                 FOREIGN KEY (city_id) REFERENCES cities(id)
             );
         """;

@@ -15,8 +15,8 @@ builder.Services.AddSession(options =>
 var app = builder.Build();
 app.UseSession();
 
-app.Run();
 
+Console.WriteLine("PROGRAM.CS LOADED!");
 
 // Login
 app.MapGet("/login", Login.Get);
@@ -37,7 +37,10 @@ app.MapPost("/cities/create", Cities.CreateCity);    //admin
 app.MapDelete("/cities/{id}", Cities.DeleteCity);   //admin
 
 // Hämtar Pubbar ur en specifik stad och hotelet.
-app.MapGet("/cities/{city}/pubs", Pubs.GetPubs);
+//app.MapGet("/cities/{city}/pubs", Pubs.GetPubs);
+
+app.MapGet("/cities/{cityName}/pubs", Pubs.GetPubs);
+
 
 // BEER CRUD
 app.MapPost("/beers/create", Beers.Post); //admin
@@ -66,6 +69,17 @@ app.MapPost("/pubs/create", Pubs.CreatePub); //Admin
 
 
 
+// SEED
+app.MapPost("/db/seed", DatabaseSeedEndpoints.SeedDatabase);
+
+
+
+
+
+
+
+
+app.Run();
 
 // Crud endpoints för databasen
 //DatabaseEndpoints.Map(app);
