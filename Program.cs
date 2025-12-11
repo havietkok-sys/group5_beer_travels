@@ -54,6 +54,9 @@ app.MapGet("/cities/{city}/hotel", Hotels.GetHotel);
 app.MapPost("/pubs/{pubId}/addbeer", PubBeers.AddBeerToPub); //Admin
 app.MapDelete("/pubs/{pubId}/beers/{beerId}", PubBeers.RemoveBeerFromPub); //Admin
 
+app.MapGet("/pubs/{pubId}/beers", Pubs.GetBeersForPub); //Hämtar ut alla öl på specidic pub
+
+
 
 // special, reset db
 app.MapDelete("/db", Database.db_reset_to_default); //admin
