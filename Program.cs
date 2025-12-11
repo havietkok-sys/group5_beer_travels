@@ -15,7 +15,6 @@ builder.Services.AddSession(options =>
 var app = builder.Build();
 app.UseSession();
 
-app.Run();
 
 
 // Login
@@ -36,15 +35,14 @@ app.MapDelete("/users/{id}", Users.Delete);  //admin
 app.MapPost("/cities/create", Cities.CreateCity);    //admin
 app.MapDelete("/cities/{id}", Cities.DeleteCity);   //admin
 
-// Hämtar Pubbar ur en specifik stad och hotelet.
-app.MapGet("/cities/{city}/pubs", Pubs.GetPubs);
+
 
 // BEER CRUD
 app.MapPost("/beers/create", Beers.Post); //admin
 app.MapGet("/beers", Beers.GetAll);
 app.MapGet("/beers/{id}", Beers.Get);
 app.MapDelete("/beers/{id}", Beers.Delete); //admin
-app.MapGet("/beers/cheapest", BeerTravelStatistics.GetTop10Cheapest);
+
 
 // Skapa hotel 
 app.MapPost("/hotels/create", Hotels.CreateHotel); //Admin
@@ -55,7 +53,21 @@ app.MapGet("/cities/{city}/hotel", Hotels.GetHotel);
 app.MapPost("/pubs/{pubId}/addbeer", PubBeers.AddBeerToPub); //Admin
 app.MapDelete("/pubs/{pubId}/beers/{beerId}", PubBeers.RemoveBeerFromPub); //Admin
 
+//Pub Crud
+app.MapPost("/pubs/create", Pubs.CreatePub); //Admin
+
+
+// Statestik och informations hämtning
+
+app.MapGet("/statistics/average-beer-price", BeerTravelStatistics.GetAverageBeerPricePerCity);
+app.MapGet("/beers/cheapest", BeerTravelStatistics.GetTop10Cheapest);
+
 app.MapGet("/pubs/{pubId}/beers", Pubs.GetBeersForPub); //Hämtar ut alla öl på specidic pub
+
+
+// Hämtar Pubbar ur en specifik stad och hotelet.
+app.MapGet("/cities/{city}/pubs", Pubs.GetPubs);
+
 
 
 
@@ -65,12 +77,6 @@ app.MapDelete("/db", Database.db_reset_to_default); //admin
 
 
 
-//Pub Crud
-app.MapPost("/pubs/create", Pubs.CreatePub); //Admin
+app.Run();
 
-
-
-
-// Crud endpoints för databasen
-//DatabaseEndpoints.Map(app);
 
