@@ -15,15 +15,24 @@ public static class Database
         await MySqlHelper.ExecuteNonQueryAsync(conn, "DROP TABLE IF EXISTS users");
 
 
-        //  USERS 
+        //  USERS - med name och role
         string users_table = """
             CREATE TABLE users (
                 id INT PRIMARY KEY AUTO_INCREMENT,
-                email VARCHAR(256) NOT NULL UNIQUE,
-                password TEXT NOT NULL
+                name VARCHAR(255),
+                email VARCHAR(254) NOT NULL UNIQUE,
+                password VARCHAR(128) NOT NULL,
+                role VARCHAR(20) NOT NULL DEFAULT 'traveler'
             );
         """;
         await MySqlHelper.ExecuteNonQueryAsync(conn, users_table);
+
+        // Skapa en default admin-användare
+        string create_admin = """
+            INSERT INTO users (name, email, password, role)
+            VALUES ('Admin', 'admin@beertravels.se', 'admin123', 'admin');
+        """;
+        await MySqlHelper.ExecuteNonQueryAsync(conn, create_admin);
 
 
         //  CITIES 
