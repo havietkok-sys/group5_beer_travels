@@ -83,7 +83,7 @@ public static class Database
             );z
         """;
         await MySqlHelper.ExecuteNonQueryAsync(conn, flavors_table);  
-    }
+    
         
 
         // Kopplingstabell mellan öl och smaker (Many-to-Many)zzz
@@ -103,7 +103,7 @@ public static class Database
 
 
         //  PUB_BEERS (unik öl per pub, med pris) 
-        string beers_table = """
+        string pub_beers_table = """
             CREATE TABLE pub_beers (
                 pub_id INT NOT NULL,
                 beer_id INT NOT NULL,
@@ -115,3 +115,6 @@ public static class Database
         """;
         await MySqlHelper.ExecuteNonQueryAsync(conn, pub_beers_table);
     }
+}
+
+    
