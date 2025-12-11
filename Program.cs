@@ -44,6 +44,7 @@ app.MapPost("/beers/create", Beers.Post); //admin
 app.MapGet("/beers", Beers.GetAll);
 app.MapGet("/beers/{id}", Beers.Get);
 app.MapDelete("/beers/{id}", Beers.Delete); //admin
+app.MapGet("/beers/cheapest", BeerTravelStatistics.GetTop10Cheapest);
 
 // Skapa hotel 
 app.MapPost("/hotels/create", Hotels.CreateHotel); //Admin
