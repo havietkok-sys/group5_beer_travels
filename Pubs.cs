@@ -1,8 +1,17 @@
 namespace server;
 
 using MySql.Data.MySqlClient;
+<<<<<<< HEAD
 public static class Pubs
 {
+=======
+
+public static class Pubs
+{
+
+    //      RECORDS
+
+>>>>>>> main
     public record PubCreate(
         string CityName,
         string Name,
@@ -12,6 +21,23 @@ public static class Pubs
         string Close
     );
 
+<<<<<<< HEAD
+=======
+    public record Pub_Data(int Id, string Name, string Address);
+
+    public record PubBeer_Data(
+        int Id,
+        string Name,
+        string Type,
+        decimal PricePerLiter
+    );
+
+
+
+    //      CREATE PUB
+
+
+>>>>>>> main
     public static async Task<IResult>
     CreatePub(Config config, PubCreate data)
     {
@@ -20,10 +46,17 @@ public static class Pubs
             return Results.BadRequest("City does not exist");
 
         string query = """
+<<<<<<< HEAD
             INSERT INTO pubs
             (city_id, name, address, distance_to_hotel_m, open_time, close_time)
             VALUES (@city, @name, @addr, @dist, @open, @close)
         """;
+=======
+INSERT INTO pubs
+(city_id, name, address, distance_to_hotel_m, open_time, close_time)
+VALUES (@city, @name, @addr, @dist, @open, @close)
+""";
+>>>>>>> main
 
         var parameters = new MySqlParameter[]
         {
@@ -39,7 +72,15 @@ public static class Pubs
 
         return Results.Ok("Pub created");
     }
+<<<<<<< HEAD
     public record Pub_Data(int Id, string Name, string Address);
+=======
+
+
+
+    //   GET PUBS IN CITY 
+
+>>>>>>> main
 
     public static async Task<List<Pub_Data>>
     GetPubs(string cityName, Config config)
@@ -57,7 +98,11 @@ public static class Pubs
         {
             while (reader.Read())
             {
+<<<<<<< HEAD
                 pubs.Add(new(
+=======
+                pubs.Add(new Pub_Data(
+>>>>>>> main
                     reader.GetInt32(0),
                     reader.GetString(1),
                     reader.GetString(2)
@@ -68,6 +113,60 @@ public static class Pubs
         return pubs;
     }
 
+<<<<<<< HEAD
+=======
+
+    // 
+    //   GET BEERS FOR PUB
+    // 
+
+    public static async Task<List<PubBeer_Data>>
+    GetBeersForPub(int pubId, Config config)
+    {
+        List<PubBeer_Data> beers = new();
+
+        string query = """
+SELECT 
+    b.id,
+    b.name,
+    b.type,
+    pb.price_per_liter
+FROM pub_beers pb
+JOIN beers b ON pb.beer_id = b.id
+WHERE pb.pub_id = @pub
+""";
+
+        var parameters = new MySqlParameter[]
+        {
+            new("@pub", pubId)
+        };
+
+        using (var reader = await MySqlHelper.ExecuteReaderAsync(
+            config.ConnectionString,
+            query,
+            parameters
+        ))
+        {
+            while (reader.Read())
+            {
+                beers.Add(new PubBeer_Data(
+                    reader.GetInt32(0),
+                    reader.GetString(1),
+                    reader.GetString(2),
+                    reader.GetDecimal(3)
+                ));
+            }
+        }
+
+        return beers;
+    }
+
+
+
+    //        HELPER (hjälpmetod att hämta ut id från stads namn)
+
+
+>>>>>>> main
     private static async Task<int?>
     GetCityId(Config config, string cityName)
     {
