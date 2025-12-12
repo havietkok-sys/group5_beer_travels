@@ -46,8 +46,20 @@ public class Beers
     return result;
   }
 
-  public static async Task Post(BeerCreate beer, Config config)
+  // POST /beers/create - Skapa �l (admin only)
+  public static async Task<IResult> Post(BeerCreate beer, Config config, HttpContext ctx)
   {
+    // Kolla att anv�ndaren �r admin
+    var authCheck = await Auth.RequireAdmin(config, ctx);
+    if (authCheck is not null)
+      return authCheck;
+
+    if (string.IsNullOrWhiteSpace(beer.Name))
+      return Results.BadRequest("Namn kr�vs");
+
+    if (string.IsNullOrWhiteSpace(beer.Type))
+      return Results.BadRequest("Typ kr�vs");
+
     string query = "INSERT INTO beers (name, type) VALUES (@name, @type)";
     var parameters = new MySqlParameter[]
     {
@@ -56,13 +68,21 @@ public class Beers
     };
 
     await MySqlHelper.ExecuteNonQueryAsync(config.ConnectionString, query, parameters);
+    return Results.Ok("�l skapad");
   }
 
-  public static async Task Delete(int id, Config config)
+  // DELETE /beers/{id} - Ta bort �l (admin only)
+  public static async Task<IResult> Delete(int id, Config config, HttpContext ctx)
   {
+    // Kolla att anv�ndaren �r admin
+    var authCheck = await Auth.RequireAdmin(config, ctx);
+    if (authCheck is not null)
+      return authCheck;
+
     string query = "DELETE FROM beers WHERE id = @id";
     var parameters = new MySqlParameter[] { new("@id", id) };
 
     await MySqlHelper.ExecuteNonQueryAsync(config.ConnectionString, query, parameters);
+    return Results.Ok("�l borttagen");
   }
 }

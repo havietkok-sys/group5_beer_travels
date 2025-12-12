@@ -18,7 +18,6 @@ app.UseSession();
 app.Run();
 app.Run();
 
-
 // Login
 app.MapGet("/login", Login.Get);
 app.MapPost("/login", Login.Post);
@@ -31,6 +30,56 @@ app.MapGet("/users", Users.GetAll);
 app.MapPost("/users", Users.Post);
 app.MapGet("/users/{id}", Users.Get);
 app.MapDelete("/users/{id}", Users.Delete);  //admin
+
+
+// Skapa cities
+app.MapPost("/cities/create", Cities.CreateCity);    //admin
+app.MapDelete("/cities/{id}", Cities.DeleteCity);   //admin
+
+// Hämtar Pubbar ur en specifik stad och hotelet.
+//app.MapGet("/cities/{city}/pubs", Pubs.GetPubs);
+
+app.MapGet("/cities/{cityName}/pubs", Pubs.GetPubs);
+
+
+// BEER CRUD
+app.MapPost("/beers/create", Beers.Post); //admin
+app.MapGet("/beers", Beers.GetAll);
+app.MapGet("/beers/{id}", Beers.Get);
+app.MapDelete("/beers/{id}", Beers.Delete); //admin
+
+
+// Skapa hotel 
+app.MapPost("/hotels/create", Hotels.CreateHotel); //Admin
+app.MapGet("/cities/{city}/hotel", Hotels.GetHotel);
+
+
+// Pub ölernas crud
+app.MapPost("/pubs/{pubId}/addbeer", PubBeers.AddBeerToPub); //Admin
+app.MapDelete("/pubs/{pubId}/beers/{beerId}", PubBeers.RemoveBeerFromPub); //Admin
+
+//Pub Crud
+app.MapPost("/pubs/create", Pubs.CreatePub); //Admin
+
+
+// Statestik och informations hämtning
+
+app.MapGet("/statistics/average-beer-price", BeerTravelStatistics.GetAverageBeerPricePerCity);
+app.MapGet("/beers/cheapest", BeerTravelStatistics.GetTop10Cheapest);
+
+app.MapGet("/pubs/{pubId}/beers", Pubs.GetBeersForPub); //Hämtar ut alla öl på specidic pub
+
+
+// Hämtar Pubbar ur en specifik stad och hotelet.
+app.MapGet("/cities/{city}/pubs", Pubs.GetPubs);
+
+
+
+// SEED
+app.MapPost("/db/seed", DatabaseSeedEndpoints.SeedDatabase);
+
+
+
 
 
 // Skapa cities
@@ -60,25 +109,14 @@ app.MapGet("/pubs/{pubId}/beers", Pubs.GetBeersForPub); //Hämtar ut alla öl p�
 
 
 
+app.Run();
+
 // special, reset db
 app.MapDelete("/db", Database.db_reset_to_default); //admin
 
 
 
 
-//Pub Crud
-app.MapPost("/pubs/create", Pubs.CreatePub); //Admin
+app.Run();
 
-
-app.MapPost("/beer_flavors/create", beer_flavors.CreateFlavor);
-app.MapGet("/beer_flavors", beer_flavors.GetAllFlavors);
-app.MapDelete("/beer_flavors/{id}", beer_flavors.DeleteFlavor);
-app.MapPost("/beers/{beerId}/add_flavor/{flavorId}", beer_flavors.AddflavorTobeer);
-app.MapDelete("/beers/{beerId}/remove_flavor/{flavorId}", beer_flavors.Removeflavorfrombeer);
-
-
-
-
-// Crud endpoints för databasen
-//DatabaseEndpoints.Map(app);
 

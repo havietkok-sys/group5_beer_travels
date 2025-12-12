@@ -1,17 +1,12 @@
 namespace server;
 
 using MySql.Data.MySqlClient;
-<<<<<<< HEAD
-public static class Pubs
-{
-=======
 
 public static class Pubs
 {
 
     //      RECORDS
 
->>>>>>> main
     public record PubCreate(
         string CityName,
         string Name,
@@ -21,8 +16,6 @@ public static class Pubs
         string Close
     );
 
-<<<<<<< HEAD
-=======
     public record Pub_Data(int Id, string Name, string Address);
 
     public record PubBeer_Data(
@@ -34,29 +27,25 @@ public static class Pubs
 
 
 
-    //      CREATE PUB
-
-
->>>>>>> main
-    public static async Task<IResult>
-    CreatePub(Config config, PubCreate data)
+    // POST /pubs/create - Skapa pub (admin only)
+    public static async Task<IResult> CreatePub(Config config, PubCreate data, HttpContext ctx)
     {
+        // Kolla att användaren är admin
+        var authCheck = await Auth.RequireAdmin(config, ctx);
+        if (authCheck is not null)
+            return authCheck;
+
         int? cityId = await GetCityId(config, data.CityName);
         if (cityId is null)
-            return Results.BadRequest("City does not exist");
+            return Results.BadRequest("Staden finns inte");
+
+
 
         string query = """
-<<<<<<< HEAD
-            INSERT INTO pubs
-            (city_id, name, address, distance_to_hotel_m, open_time, close_time)
-            VALUES (@city, @name, @addr, @dist, @open, @close)
-        """;
-=======
 INSERT INTO pubs
 (city_id, name, address, distance_to_hotel_m, open_time, close_time)
 VALUES (@city, @name, @addr, @dist, @open, @close)
 """;
->>>>>>> main
 
         var parameters = new MySqlParameter[]
         {
@@ -72,15 +61,11 @@ VALUES (@city, @name, @addr, @dist, @open, @close)
 
         return Results.Ok("Pub created");
     }
-<<<<<<< HEAD
-    public record Pub_Data(int Id, string Name, string Address);
-=======
 
 
 
     //   GET PUBS IN CITY 
 
->>>>>>> main
 
     public static async Task<List<Pub_Data>>
     GetPubs(string cityName, Config config)
@@ -98,11 +83,7 @@ VALUES (@city, @name, @addr, @dist, @open, @close)
         {
             while (reader.Read())
             {
-<<<<<<< HEAD
-                pubs.Add(new(
-=======
                 pubs.Add(new Pub_Data(
->>>>>>> main
                     reader.GetInt32(0),
                     reader.GetString(1),
                     reader.GetString(2)
@@ -113,8 +94,6 @@ VALUES (@city, @name, @addr, @dist, @open, @close)
         return pubs;
     }
 
-<<<<<<< HEAD
-=======
 
     // 
     //   GET BEERS FOR PUB
@@ -166,7 +145,6 @@ WHERE pb.pub_id = @pub
     //        HELPER (hjälpmetod att hämta ut id från stads namn)
 
 
->>>>>>> main
     private static async Task<int?>
     GetCityId(Config config, string cityName)
     {
