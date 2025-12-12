@@ -48,6 +48,10 @@ app.MapGet("/beers", Beers.GetAll);
 app.MapGet("/beers/{id}", Beers.Get);
 app.MapDelete("/beers/{id}", Beers.Delete); //admin
 
+// crud Flavor
+app.MapPost("/flavors/create", beer_flavors.CreateFlavor); 
+app.MapDelete("/flavors/{id}", beer_flavors.DeleteFlavor); 
+app.MapGet("/flavors", beer_flavors.GetAllFlavors);
 
 // Skapa hotel 
 app.MapPost("/hotels/create", Hotels.CreateHotel); //Admin
