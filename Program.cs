@@ -51,9 +51,11 @@ app.MapDelete("/beers/{id}", Beers.Delete); //admin
 // crud Flavor Tabell för flavors.
 app.MapPost("/flavors/create", beer_flavors.CreateFlavor); 
 app.MapDelete("/flavors/{id}", beer_flavors.DeleteFlavor); 
-app.MapGet("/flavors", beer_flavors.GetAllFlavors);
-  
+app.MapGet("/beers/{beerID}/flavors", beer_flavors.GetAllFlavors);
+app.MapGet("/beers/withflavor/flavors", beer_flavors.GetFlavorsForBeer); //Hämta smaker för ett specifikt öl.
 // Skapa hotel 
+
+
 app.MapPost("/hotels/create", Hotels.CreateHotel); //Admin
 app.MapGet("/cities/{city}/hotel", Hotels.GetHotel);
 
