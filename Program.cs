@@ -16,8 +16,6 @@ var app = builder.Build();
 app.UseSession();
 
 
-Console.WriteLine("PROGRAM.CS LOADED!");
-
 // Login
 app.MapGet("/login", Login.Get);
 app.MapPost("/login", Login.Post);
@@ -81,6 +79,5 @@ app.MapPost("/db/seed", DatabaseSeedEndpoints.SeedDatabase);
 
 app.Run();
 
-// Crud endpoints för databasen
-//DatabaseEndpoints.Map(app);
+
 
