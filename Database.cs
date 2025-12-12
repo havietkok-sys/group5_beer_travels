@@ -7,6 +7,9 @@ public static class Database
         string conn = config.ConnectionString;
 
         // Droppa dom i rätt ordning så det inte blockas av fq
+        await MySqlHelper.ExecuteNonQueryAsync(conn, "DROP TABLE IF EXISTS booking_rooms");
+        await MySqlHelper.ExecuteNonQueryAsync(conn, "DROP TABLE IF EXISTS bookings");
+        await MySqlHelper.ExecuteNonQueryAsync(conn, "DROP TABLE IF EXISTS rooms");
         await MySqlHelper.ExecuteNonQueryAsync(conn, "DROP TABLE IF EXISTS pub_beers");
         await MySqlHelper.ExecuteNonQueryAsync(conn, "DROP TABLE IF EXISTS beers");
         await MySqlHelper.ExecuteNonQueryAsync(conn, "DROP TABLE IF EXISTS pubs");
@@ -98,5 +101,52 @@ public static class Database
             );
         """;
         await MySqlHelper.ExecuteNonQueryAsync(conn, pub_beers_table);
+
+        //  ROOMS (rumstyper per hotell)
+        string rooms_table = """
+            CREATE TABLE rooms (
+                id INT PRIMARY KEY AUTO_INCREMENT,
+                hotel_id INT NOT NULL,
+                room_type VARCHAR(50) NOT NULL,
+                capacity INT NOT NULL,
+                price_per_night DECIMAL(10,2) NOT NULL,
+                total_rooms INT NOT NULL,
+                FOREIGN KEY (hotel_id) REFERENCES hotels(id)
+            );
+        """;
+        await MySqlHelper.ExecuteNonQueryAsync(conn, rooms_table);
+
+
+        //  BOOKINGS (bokningar)
+        string bookings_table = """
+            CREATE TABLE bookings (
+                id INT PRIMARY KEY AUTO_INCREMENT,
+                user_id INT NOT NULL,
+                hotel_id INT NOT NULL,
+                check_in DATE NOT NULL,
+                check_out DATE NOT NULL,
+                guests INT NOT NULL,
+                total_price DECIMAL(10,2) NOT NULL,
+                status VARCHAR(20) NOT NULL DEFAULT 'pending',
+                created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY (user_id) REFERENCES users(id),
+                FOREIGN KEY (hotel_id) REFERENCES hotels(id)
+            );
+        """;
+        await MySqlHelper.ExecuteNonQueryAsync(conn, bookings_table);
+
+
+        //  BOOKING_ROOMS (koppling bokning <-> rum)
+        string booking_rooms_table = """
+            CREATE TABLE booking_rooms (
+                id INT PRIMARY KEY AUTO_INCREMENT,
+                booking_id INT NOT NULL,
+                room_id INT NOT NULL,
+                quantity INT NOT NULL,
+                FOREIGN KEY (booking_id) REFERENCES bookings(id) ON DELETE CASCADE,
+                FOREIGN KEY (room_id) REFERENCES rooms(id)
+            );
+        """;
+        await MySqlHelper.ExecuteNonQueryAsync(conn, booking_rooms_table);
     }
 }
