@@ -73,24 +73,61 @@ app.MapGet("/pubs/{pubId}/beers", Pubs.GetBeersForPub); //Hämtar ut alla öl p�
 // Hämtar Pubbar ur en specifik stad och hotelet.
 app.MapGet("/cities/{city}/pubs", Pubs.GetPubs);
 
+// ROOM ENDPOINTS
+
+app.MapPost("/rooms/create", Rooms.CreateRoom);                        // Skapa rumstyp (admin)
+app.MapGet("/hotels/{hotelId}/rooms", Rooms.GetRoomsByHotel);          // Hämta rumstyper för hotell
+app.MapGet("/rooms/{id}", Rooms.GetRoom);                              // Hämta en rumstyp
+app.MapGet("/hotels/{hotelId}/rooms/available",
+    async (int hotelId, string checkIn, string checkOut, Config config) =>
+    {
+        if (!DateOnly.TryParse(checkIn, out var checkInDate) ||
+            !DateOnly.TryParse(checkOut, out var checkOutDate))
+            return Results.BadRequest("Ogiltigt datumformat. Använd YYYY-MM-DD");
+
+        var rooms = await Rooms.GetAvailableRooms(hotelId, checkInDate, checkOutDate, config);
+        return Results.Ok(rooms);
+    });                                                                 // Hämta lediga rum för datum
+app.MapDelete("/rooms/{id}", Rooms.DeleteRoom);                        // Ta bort rumstyp (admin)
+app.MapPut("/rooms/{id}", Rooms.UpdateRoom);                           // Uppdatera rumstyp (admin)
+
+
+// BOOKING ENDPOINTS
+app.MapPost("/bookings", Bookings.CreateBooking);                      // Skapa bokning (inloggad)
+app.MapGet("/bookings/my", Bookings.GetMyBookings);                    // Mina bokningar (inloggad)
+app.MapGet("/bookings/{id}", Bookings.GetBooking);                     // Bokningsdetaljer
+app.MapDelete("/bookings/{id}", Bookings.CancelBooking);               // Avboka
+app.MapGet("/bookings", Bookings.GetAllBookings);                      // Alla bokningar (admin)
+
+
+// BOOKING-ROOMS ENDPOINTS (koppling mellan bokningar och rum)
+app.MapPost("/booking-rooms", BookingRooms.AddRoomToBooking);          // Lägg till rum i bokning
+app.MapGet("/bookings/{bookingId}/rooms",
+    async (int bookingId, Config config) =>
+    Results.Ok(await BookingRooms.GetRoomsByBooking(bookingId, config)));  // Hämta rum i bokning
+app.MapGet("/bookings/{bookingId}/summary",
+    async (int bookingId, int nights, Config config) =>
+    Results.Ok(await BookingRooms.GetBookingSummary(bookingId, nights, config)));  // Kostnadssammanfattning
+app.MapPut("/booking-rooms/{id}",
+    async (int id, int quantity, Config config, HttpContext ctx) =>
+    await BookingRooms.UpdateRoomQuantity(id, quantity, config, ctx));  // Uppdatera antal rum
+app.MapDelete("/booking-rooms/{id}", BookingRooms.RemoveRoomFromBooking);  // Ta bort rum från bokning
 
 
 // SEED
-app.MapPost("/db/seed", DatabaseSeedEndpoints.SeedDatabase);
+app.MapDelete("/db/seed", DatabaseSeedEndpoints.ReseedDatabase);   // Rensa och fyll om
 
-
-
-
-
-
-
-
-app.Run();
 
 // special, reset db
-app.MapDelete("/db", Database.db_reset_to_default); //admin
+app.MapDelete("/db", async (Config config, HttpContext ctx) =>
+{
+    var authCheck = await Auth.RequireAdmin(config, ctx);
+    if (authCheck is not null)
+        return authCheck;
 
-
+    await Database.db_reset_to_default(config);
+    return Results.Ok("Database reset");
+});
 
 
 app.Run();
