@@ -47,50 +47,27 @@ public static class DatabaseSeedEndpoints
         """);
 
         //                   Flavors
-        MySqlHelper.ExecuteNonQuery(conn, """
-            INSERT INTO beers (name, type) VALUES
-                ('Brooklyn Lager', 'Lager'),
-                ('Sierra Nevada Pale Ale', 'Pale Ale'),
-                ('Guinness Draught', 'Stout'),
-                ('Hoegaarden Witbier', 'Witbier'),
-                ('Duvel', 'Belgian Strong Ale');
+       MySqlHelper.ExecuteNonQuery(conn, """  
+    INSERT INTO flavors (name) VALUES  
+        ('Humle'),  
+        ('Söt'),  
+        ('Sur'),  
+        ('Bitter'),  
+        ('Maltig');  
+""");
+
+// SEED: Koppla öl till smaker
+MySqlHelper.ExecuteNonQuery(conn, """  
+    INSERT INTO beer_flavors (beer_id, flavor_id) VALUES  
+        (1, 1), (1, 5),   -- Brooklyn Lager: Humle, Maltig  
+        (2, 1), (2, 4),   -- Sierra Nevada: Humle, Bitter  
+        (3, 5), (3, 2),   -- Guinness: Maltig, Söt  
+        (4, 3), (4, 2),   -- Hoegaarden: Sur, Söt  
+        (5, 1), (5, 4), (5, 2);  -- Duvel: Humle, Bitter, Söt  
+""");
 
 
-                Flavor-ID baserat på tidigare seed:
-                1 = Humle
-                2 = Söt
-                3 = Sur
-                4 = Bitter
-                5 = Maltig  
-                INSERT INTO flavors (name) VALUES
-
-
-        """);
-          
-           //opplingstabell mellan öl och smaker (många-till-många)
-        MySqlHelper.ExecuteNonQuery(conn, """
-            INSERT INTO beer_flavors (beer_id, flavor_id) VALUES
-                -- Brooklyn Lager
-                (1, 1), -- Humle
-                (1, 5), -- Malt
-
-                -- Sierra Nevada Pale Ale
-                (2, 1), -- Humle
-                (2, 4), -- Bitter
-
-                -- Guinness Draught
-                (3, 5), -- Malt
-                (3, 2), -- Söt
-
-                -- Hoegaarden Witbier
-                (4, 3), -- Sur
-                (4, 2), -- Söt
-
-                -- Duvel
-                (5, 1), -- Humle
-                  (5, 4), -- Bitter
-                   (5, 2); -- Söt
-        """);
+        
 
         //
         //                       Pubs
