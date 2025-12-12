@@ -16,6 +16,7 @@ var app = builder.Build();
 app.UseSession();
 
 app.Run();
+app.Run();
 
 
 // Login
@@ -57,9 +58,6 @@ app.MapDelete("/pubs/{pubId}/beers/{beerId}", PubBeers.RemoveBeerFromPub); //Adm
 
 app.MapGet("/pubs/{pubId}/beers", Pubs.GetBeersForPub); //Hämtar ut alla öl på specidic pub
 
-// Pub ölernas crud
-app.MapPost("/pubs/{pubId}/addbeer", PubBeers.AddBeerToPub); //Admin
-app.MapDelete("/pubs/{pubId}/beers/{beerId}", PubBeers.RemoveBeerFromPub); //Admin
 
 
 // special, reset db
@@ -70,6 +68,13 @@ app.MapDelete("/db", Database.db_reset_to_default); //admin
 
 //Pub Crud
 app.MapPost("/pubs/create", Pubs.CreatePub); //Admin
+
+
+app.MapPost("/beer_flavors/create", beer_flavors.CreateFlavor);
+app.MapGet("/beer_flavors", beer_flavors.GetAllFlavors);
+app.MapDelete("/beer_flavors/{id}", beer_flavors.DeleteFlavor);
+app.MapPost("/beers/{beerId}/add_flavor/{flavorId}", beer_flavors.AddflavorTobeer);
+app.MapDelete("/beers/{beerId}/remove_flavor/{flavorId}", beer_flavors.Removeflavorfrombeer);
 
 
 
