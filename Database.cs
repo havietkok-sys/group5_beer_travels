@@ -80,7 +80,7 @@ public static class Database
             CREATE TABLE flavors (
                 id INT PRIMARY KEY AUTO_INCREMENT,
                 name VARCHAR(50) NOT NULL UNIQUE
-            );z
+            );
         """;
         await MySqlHelper.ExecuteNonQueryAsync(conn, flavors_table);  
     
