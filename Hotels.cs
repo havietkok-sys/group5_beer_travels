@@ -9,16 +9,15 @@ public static class Hotels
     public static async Task<IResult>
     CreateHotel(Config config, HotelCreate data)
     {
-        //
+
         // Hämta CityId — exakt som originalet men async
-        //
+
         int? cityId = await GetCityId(config, data.CityName);
         if (cityId is null)
             return Results.BadRequest("City does not exist");
 
-        //
         // Insert hotel
-        //
+
         string query = """
             INSERT INTO hotels (city_id, name, address)
             VALUES (@city, @name, @addr)
@@ -66,9 +65,9 @@ public static class Hotels
     }
 
 
-    //
+
     //  Helper: GetCityId (async)
-    //
+
     private static async Task<int?>
     GetCityId(Config config, string cityName)
     {

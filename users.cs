@@ -31,7 +31,7 @@ class Users
         var parameters = new MySqlParameter[] { new("@id", id) };
         using (var reader = await MySqlHelper.ExecuteReaderAsync(config.ConnectionString, query, parameters))
         {
-            if (reader.Read()) // using if instead of while since we only expect a single result from this query
+            if (reader.Read())
             {
                 result = new(reader.GetString(0), reader.GetString(1));
             }
