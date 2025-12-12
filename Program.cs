@@ -15,6 +15,8 @@ builder.Services.AddSession(options =>
 var app = builder.Build();
 app.UseSession();
 
+app.Run();
+app.Run();
 
 // Login
 app.MapGet("/login", Login.Get);
@@ -67,21 +69,8 @@ app.MapGet("/beers/cheapest", BeerTravelStatistics.GetTop10Cheapest);
 
 app.MapGet("/pubs/{pubId}/beers", Pubs.GetBeersForPub); //Hämtar ut alla öl på specidic pub
 
-
-// Hämtar Pubbar ur en specifik stad och hotelet.
-app.MapGet("/cities/{city}/pubs", Pubs.GetPubs);
-
-
-
 // SEED
 app.MapPost("/db/seed", DatabaseSeedEndpoints.SeedDatabase);
-
-
-
-
-
-
-
 
 app.Run();
 
