@@ -4,7 +4,7 @@ using MySql.Data.MySqlClient;
 
 class Users
 {
-    // GET /users - H�mta alla anv�ndare (admin only)
+    // GET /users - Hämta alla användare (admin only)
     public record GetAll_Data(int Id, string? Name, string Email, string Role);
     public static async Task<IResult> GetAll(Config config, HttpContext ctx)
     {
