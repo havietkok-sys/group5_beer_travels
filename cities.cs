@@ -51,3 +51,4 @@ public static class Cities
         return Results.Ok("City deleted");
     }
 }
+
