@@ -51,6 +51,29 @@ public static class DatabaseSeedEndpoints
             (10,'BeerTravelHotel Norrköping', 'Drottninggatan 9', 250);
         """);
 
+        //                   Flavors
+       MySqlHelper.ExecuteNonQuery(conn, """  
+    INSERT INTO flavors (name) VALUES  
+        ('Humle'),  
+        ('Söt'),  
+        ('Sur'),  
+        ('Bitter'),  
+        ('Maltig');  
+""");
+
+// SEED: Koppla öl till smaker
+MySqlHelper.ExecuteNonQuery(conn, """  
+    INSERT INTO beer_flavors (beer_id, flavor_id) VALUES  
+        (1, 1), (1, 5),   -- Brooklyn Lager: Humle, Maltig  
+        (2, 1), (2, 4),   -- Sierra Nevada: Humle, Bitter  
+        (3, 5), (3, 2),   -- Guinness: Maltig, Söt  
+        (4, 3), (4, 2),   -- Hoegaarden: Sur, Söt  
+        (5, 1), (5, 4), (5, 2);  -- Duvel: Humle, Bitter, Söt  
+""");
+
+
+        
+
         //
         // ======================================================
         // 3. PUBS  (FK → city_id)

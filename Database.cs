@@ -75,6 +75,32 @@ public static class Database
             );
         """;
         await MySqlHelper.ExecuteNonQueryAsync(conn, beers_table);
+        
+        // Smak table för öl
+        string flavors_table = """
+            CREATE TABLE flavors (
+                id INT PRIMARY KEY AUTO_INCREMENT,
+                name VARCHAR(50) NOT NULL UNIQUE
+            );
+        """;
+        await MySqlHelper.ExecuteNonQueryAsync(conn, flavors_table);  
+    
+        
+
+        // Kopplingstabell mellan öl och smaker (Many-to-Many)zzz
+        string beer_flavors = """ 
+            CREATE TABLE beer_flavors (
+                beer_id INT NOT NULL,
+                flavor_id INT NOT NULL,
+                PRIMARY KEY (beer_id, flavor_id),
+                FOREIGN KEY (beer_id) REFERENCES beers(id),
+                FOREIGN KEY (flavor_id) REFERENCES flavors(id)
+            );
+        """;
+ 
+
+        await MySqlHelper.ExecuteNonQueryAsync(conn, beer_flavors);
+    
 
 
         //  PUB_BEERS (unik öl per pub, med pris) 
@@ -91,3 +117,5 @@ public static class Database
         await MySqlHelper.ExecuteNonQueryAsync(conn, pub_beers_table);
     }
 }
+
+    

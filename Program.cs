@@ -15,6 +15,8 @@ builder.Services.AddSession(options =>
 var app = builder.Build();
 app.UseSession();
 
+app.Run();
+app.Run();
 
 // Login
 app.MapGet("/login", Login.Get);
@@ -40,6 +42,10 @@ app.MapGet("/beers", Beers.GetAll);
 app.MapGet("/beers/{id}", Beers.Get);
 app.MapDelete("/beers/{id}", Beers.Delete); //admin*
 
+// crud Flavor Tabell för flavors.
+app.MapPost("/flavors/create", beer_flavors.CreateFlavor);
+app.MapDelete("/flavors/{id}", beer_flavors.DeleteFlavor);
+app.MapGet("/flavors", beer_flavors.GetAllFlavors);
 
 // Skapa hotel 
 app.MapPost("/hotels/create", Hotels.CreateHotel); //Admin
@@ -61,15 +67,8 @@ app.MapGet("/beers/cheapest", BeerTravelStatistics.GetTop10Cheapest);
 
 app.MapGet("/pubs/{pubId}/beers", Pubs.GetBeersForPub); //Hämtar ut alla öl på specidic pub
 
-
-// Hämtar Pubbar ur en specifik stad och hotelet.
-app.MapGet("/cities/{city}/pubs", Pubs.GetPubs);
-
-
-
 // SEED
 app.MapPost("/db/seed", DatabaseSeedEndpoints.SeedDatabase); //Admin
-
 
 
 // special, reset db
