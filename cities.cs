@@ -9,7 +9,7 @@ public static class Cities
     // POST /cities/create - Skapa stad (admin only)
     public static async Task<IResult> CreateCity(Config config, CityCreate data, HttpContext ctx)
     {
-        // Kolla att anv�ndaren �r admin
+        // Kolla att användaren är admin
         var authCheck = await Auth.RequireAdmin(config, ctx);
         if (authCheck is not null)
             return authCheck;
@@ -35,7 +35,7 @@ public static class Cities
     // DELETE /cities/{id} - Ta bort stad (admin only)
     public static async Task<IResult> DeleteCity(Config config, int id, HttpContext ctx)
     {
-        // Kolla att anv�ndaren �r admin
+        // Kolla att användaren är admin
         var authCheck = await Auth.RequireAdmin(config, ctx);
         if (authCheck is not null)
             return authCheck;
