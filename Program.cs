@@ -34,12 +34,6 @@ app.MapDelete("/users/{id}", Users.Delete);  //admin
 app.MapPost("/cities/create", Cities.CreateCity);    //admin
 app.MapDelete("/cities/{id}", Cities.DeleteCity);   //admin
 
-// Hämtar Pubbar ur en specifik stad och hotelet.
-//app.MapGet("/cities/{city}/pubs", Pubs.GetPubs);
-
-app.MapGet("/cities/{cityName}/pubs", Pubs.GetPubs);
-
-
 // BEER CRUD
 app.MapPost("/beers/create", Beers.Post); //admin
 app.MapGet("/beers", Beers.GetAll);
@@ -77,13 +71,6 @@ app.MapGet("/cities/{city}/pubs", Pubs.GetPubs);
 app.MapPost("/db/seed", DatabaseSeedEndpoints.SeedDatabase);
 
 
-
-
-
-
-
-
-app.Run();
 
 // special, reset db
 app.MapDelete("/db", Database.db_reset_to_default); //admin
