@@ -52,7 +52,7 @@ public static class DatabaseSeedEndpoints
         """);
 
         //                   Flavors
-       MySqlHelper.ExecuteNonQuery(conn, """  
+        await MySqlHelper.ExecuteNonQueryAsync(conn, """  
     INSERT INTO flavors (name) VALUES  
         ('Humle'),  
         ('Söt'),  
@@ -61,23 +61,12 @@ public static class DatabaseSeedEndpoints
         ('Maltig');  
 """);
 
-// SEED: Koppla öl till smaker
-MySqlHelper.ExecuteNonQuery(conn, """  
-    INSERT INTO beer_flavors (beer_id, flavor_id) VALUES  
-        (1, 1), (1, 5),   -- Brooklyn Lager: Humle, Maltig  
-        (2, 1), (2, 4),   -- Sierra Nevada: Humle, Bitter  
-        (3, 5), (3, 2),   -- Guinness: Maltig, Söt  
-        (4, 3), (4, 2),   -- Hoegaarden: Sur, Söt  
-        (5, 1), (5, 4), (5, 2);  -- Duvel: Humle, Bitter, Söt  
-""");
 
 
-        
 
         //
         // ======================================================
         // 3. PUBS  (FK → city_id)
-        // Endast 3 pubbar per stad här (ren fil). Vill du ha 10/stad → jag gör SeedData.cs åt dig.
         // ======================================================
         //
         await MySqlHelper.ExecuteNonQueryAsync(conn, """
@@ -161,6 +150,16 @@ MySqlHelper.ExecuteNonQuery(conn, """
             ('Staropramen', 'Lager'),
             ('Carlsberg Hof', 'Lager');
         """);
+        // SEED: Koppla öl till smaker
+        await MySqlHelper.ExecuteNonQueryAsync(conn, """  
+        INSERT INTO beer_flavors (beer_id, flavor_id) VALUES  
+        (1, 1), (1, 5),   -- Brooklyn Lager: Humle, Maltig  
+        (2, 1), (2, 4),   -- Staropramen: Humle, Bitter  
+        (3, 5), (3, 2),   -- Guinness Draught: Maltig, Söt  
+        (4, 3), (4, 2),   -- Hoegaarden: Sur, Söt  
+        (5, 1), (5, 4), (5, 2);  -- Strongbow: Humle, Bitter, Söt  
+    """);
+
 
         //
         // ======================================================

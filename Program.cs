@@ -15,8 +15,6 @@ builder.Services.AddSession(options =>
 var app = builder.Build();
 app.UseSession();
 
-app.Run();
-app.Run();
 
 // Login
 app.MapGet("/login", Login.Get);
