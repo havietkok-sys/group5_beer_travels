@@ -71,10 +71,10 @@ public class Beers
     return Results.Ok("öl skapad");
   }
 
-  // DELETE /beers/{id} - Ta bort �l (admin only)
+  // DELETE /beers/{id} - Ta bort öl (admin only)
   public static async Task<IResult> Delete(int id, Config config, HttpContext ctx)
   {
-    // Kolla att anv�ndaren �r admin
+    // Kolla att användaren är admin
     var authCheck = await Auth.RequireAdmin(config, ctx);
     if (authCheck is not null)
       return authCheck;

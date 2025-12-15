@@ -8,7 +8,7 @@ class Users
     public record GetAll_Data(int Id, string? Name, string Email, string Role);
     public static async Task<IResult> GetAll(Config config, HttpContext ctx)
     {
-        // Kolla att anv�ndaren �r admin
+        // Kolla att användaren är admin
         string? role = await Auth.GetUserRole(config, ctx);
         if (role != "admin")
             return Results.Unauthorized();
@@ -27,16 +27,16 @@ class Users
         return Results.Ok(result);
     }
 
-    // GET /users/{id} - H�mta en specifik anv�ndare
+    // GET /users/{id} - Hämta en specifik användare
     public record Get_Data(string? Name, string Email, string Role);
     public static async Task<IResult> Get(int id, Config config, HttpContext ctx)
     {
-        // Kolla att anv�ndaren �r inloggad
+        // Kolla att användaren är inloggad
         int? userId = ctx.Session.GetInt32("user_id");
         if (userId is null)
             return Results.Unauthorized();
 
-        // Anv�ndare kan bara se sig sj�lva, admin kan se alla
+        // Användare kan bara se sig själva, admin kan se alla
         string? role = await Auth.GetUserRole(config, ctx);
         if (role != "admin" && userId != id)
             return Results.Unauthorized();
@@ -60,19 +60,19 @@ class Users
         return Results.Ok(result);
     }
 
-    // POST /users - Registrera ny anv�ndare
+    // POST /users - Registrera ny användare
     public record Post_Args(string? Name, string Email, string Password);
     public static async Task<IResult> Post(Post_Args user, Config config)
     {
         // Validera input
         if (string.IsNullOrWhiteSpace(user.Email))
-            return Results.BadRequest("Email kr�vs");
+            return Results.BadRequest("Email krävs");
 
         if (string.IsNullOrWhiteSpace(user.Password))
-            return Results.BadRequest("L�senord kr�vs");
+            return Results.BadRequest("Lösenord krävs");
 
         if (user.Password.Length < 6)
-            return Results.BadRequest("L�senordet m�ste vara minst 6 tecken");
+            return Results.BadRequest("Lösenordet måste vara minst 6 tecken");
 
         string query = """
             INSERT INTO users(name, email, password, role)
@@ -89,18 +89,18 @@ class Users
         try
         {
             await MySqlHelper.ExecuteNonQueryAsync(config.ConnectionString, query, parameters);
-            return Results.Ok("Anv�ndare skapad");
+            return Results.Ok("Användare skapad");
         }
         catch (MySqlException ex) when (ex.Number == 1062) // Duplicate entry
         {
-            return Results.BadRequest("E-postadressen �r redan registrerad");
+            return Results.BadRequest("E-postadressen är redan registrerad");
         }
     }
 
-    // DELETE /users/{id} - Ta bort anv�ndare (admin only)
+    // DELETE /users/{id} - Ta bort användare (admin only)
     public static async Task<IResult> Delete(int id, Config config, HttpContext ctx)
     {
-        // Kolla att anv�ndaren �r admin
+        // Kolla att användaren är admin
         string? role = await Auth.GetUserRole(config, ctx);
         if (role != "admin")
             return Results.Unauthorized();
@@ -109,6 +109,6 @@ class Users
         var parameters = new MySqlParameter[] { new("@id", id) };
 
         await MySqlHelper.ExecuteNonQueryAsync(config.ConnectionString, query, parameters);
-        return Results.Ok("Anv�ndare borttagen");
+        return Results.Ok("Användare borttagen");
     }
 }
