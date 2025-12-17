@@ -50,6 +50,34 @@ app.MapPost("/hotels/create", Hotels.CreateHotel); //Admin
 app.MapGet("/cities/{city}/hotel", Hotels.GetHotel);
 
 
+// ============ ROOMS ============
+// Hämta alla rumstyper för ett hotell
+app.MapGet("/hotels/{hotelId}/rooms", (int hotelId, Config cfg) => Rooms.GetRoomsForHotel(hotelId, cfg));
+
+// Kolla tillgänglighet för en rumstyp
+app.MapGet("/rooms/{roomId}/availability", (int roomId, string checkIn, string checkOut, Config cfg) => 
+    Rooms.GetAvailability(roomId, checkIn, checkOut, cfg));
+
+// Skapa rumstyp (admin)
+app.MapPost("/hotels/{hotelId}/rooms", (int hotelId, Rooms.CreateRoomData data, Config cfg, HttpContext ctx) => 
+    Rooms.CreateRoom(hotelId, data, cfg, ctx));
+
+
+// ============ BOOKINGS ============
+// Hämta inloggad användares bokningar
+app.MapGet("/bookings", (Config cfg, HttpContext ctx) => Bookings.GetMyBookings(cfg, ctx));
+
+// Hämta en specifik bokning
+app.MapGet("/bookings/{id}", (int id, Config cfg, HttpContext ctx) => Bookings.GetBooking(id, cfg, ctx));
+
+// Skapa ny bokning
+app.MapPost("/bookings", (Bookings.CreateBookingData data, Config cfg, HttpContext ctx) => 
+    Bookings.CreateBooking(data, cfg, ctx));
+
+// Avboka (sätt status till cancelled)
+app.MapDelete("/bookings/{id}", (int id, Config cfg, HttpContext ctx) => Bookings.CancelBooking(id, cfg, ctx));
+
+
 // Pub ölernas crud
 app.MapPost("/pubs/{pubId}/addbeer", PubBeers.AddBeerToPub); //Admin
 app.MapDelete("/pubs/{pubId}/beers/{beerId}", PubBeers.RemoveBeerFromPub); //Admin
@@ -76,5 +104,3 @@ app.MapDelete("/db", Database.db_reset_to_default); //admin
 
 
 app.Run();
-
-
