@@ -2,9 +2,13 @@ namespace server;
 
 public static class Database
 {
-    public static async Task db_reset_to_default(Config config)
+    public static async Task<IResult> db_reset_to_default(Config config)
     {
         string conn = config.ConnectionString;
+
+
+        await MySqlHelper.ExecuteNonQueryAsync(conn, "SET FOREIGN_KEY_CHECKS = 0;");
+
 
         // Droppa dom i rätt ordning så det inte blockas av fq
         await MySqlHelper.ExecuteNonQueryAsync(conn, "DROP TABLE IF EXISTS pub_beers");
@@ -13,6 +17,13 @@ public static class Database
         await MySqlHelper.ExecuteNonQueryAsync(conn, "DROP TABLE IF EXISTS hotels");
         await MySqlHelper.ExecuteNonQueryAsync(conn, "DROP TABLE IF EXISTS cities");
         await MySqlHelper.ExecuteNonQueryAsync(conn, "DROP TABLE IF EXISTS users");
+
+
+        await MySqlHelper.ExecuteNonQueryAsync(conn, "DROP TABLE IF EXISTS beer_flavors");
+        await MySqlHelper.ExecuteNonQueryAsync(conn, "DROP TABLE IF EXISTS flavors");
+
+
+        await MySqlHelper.ExecuteNonQueryAsync(conn, "SET FOREIGN_KEY_CHECKS = 1;");
 
 
         //  USERS 
@@ -76,6 +87,32 @@ public static class Database
         """;
         await MySqlHelper.ExecuteNonQueryAsync(conn, beers_table);
 
+        // Smak table för öl
+        string flavors_table = """
+            CREATE TABLE flavors (
+                id INT PRIMARY KEY AUTO_INCREMENT,
+                name VARCHAR(50) NOT NULL UNIQUE
+            );
+        """;
+        await MySqlHelper.ExecuteNonQueryAsync(conn, flavors_table);
+
+
+
+        // Kopplingstabell mellan öl och smaker (Many-to-Many)zzz
+        string beer_flavors = """ 
+            CREATE TABLE beer_flavors (
+                beer_id INT NOT NULL,
+                flavor_id INT NOT NULL,
+                PRIMARY KEY (beer_id, flavor_id),
+                FOREIGN KEY (beer_id) REFERENCES beers(id),
+                FOREIGN KEY (flavor_id) REFERENCES flavors(id)
+            );
+        """;
+
+
+        await MySqlHelper.ExecuteNonQueryAsync(conn, beer_flavors);
+
+
 
         //  PUB_BEERS (unik öl per pub, med pris) 
         string pub_beers_table = """
@@ -89,5 +126,7 @@ public static class Database
             );
         """;
         await MySqlHelper.ExecuteNonQueryAsync(conn, pub_beers_table);
+        return Results.Ok("Database reset completed");
     }
 }
+
