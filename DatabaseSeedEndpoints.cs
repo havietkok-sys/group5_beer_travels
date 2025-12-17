@@ -51,10 +51,22 @@ public static class DatabaseSeedEndpoints
             (10,'BeerTravelHotel Norrköping', 'Drottninggatan 9', 250);
         """);
 
+        //                   Flavors
+        await MySqlHelper.ExecuteNonQueryAsync(conn, """  
+    INSERT INTO flavors (name) VALUES  
+        ('Humle'),  
+        ('Söt'),  
+        ('Sur'),  
+        ('Bitter'),  
+        ('Maltig');  
+""");
+
+
+
+
         //
         // ======================================================
         // 3. PUBS  (FK → city_id)
-        // Endast 3 pubbar per stad här (ren fil). Vill du ha 10/stad → jag gör SeedData.cs åt dig.
         // ======================================================
         //
         await MySqlHelper.ExecuteNonQueryAsync(conn, """
@@ -138,6 +150,16 @@ public static class DatabaseSeedEndpoints
             ('Staropramen', 'Lager'),
             ('Carlsberg Hof', 'Lager');
         """);
+        // SEED: Koppla öl till smaker
+        await MySqlHelper.ExecuteNonQueryAsync(conn, """  
+        INSERT INTO beer_flavors (beer_id, flavor_id) VALUES  
+        (1, 1), (1, 5),   -- Brooklyn Lager: Humle, Maltig  
+        (2, 1), (2, 4),   -- Staropramen: Humle, Bitter  
+        (3, 5), (3, 2),   -- Guinness Draught: Maltig, Söt  
+        (4, 3), (4, 2),   -- Hoegaarden: Sur, Söt  
+        (5, 1), (5, 4), (5, 2);  -- Strongbow: Humle, Bitter, Söt  
+    """);
+
 
         //
         // ======================================================

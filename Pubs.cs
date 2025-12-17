@@ -27,15 +27,19 @@ public static class Pubs
 
 
 
-    //      CREATE PUB
-
-
-    public static async Task<IResult>
-    CreatePub(Config config, PubCreate data)
+    // POST /pubs/create - Skapa pub (admin only)
+    public static async Task<IResult> CreatePub(Config config, PubCreate data, HttpContext ctx)
     {
+        // Kolla att användaren är admin
+        var authCheck = await Auth.RequireAdmin(config, ctx);
+        if (authCheck is not null)
+            return authCheck;
+
         int? cityId = await GetCityId(config, data.CityName);
         if (cityId is null)
-            return Results.BadRequest("City does not exist");
+            return Results.BadRequest("Staden finns inte");
+
+
 
         string query = """
 INSERT INTO pubs

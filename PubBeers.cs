@@ -9,9 +9,9 @@ public static class PubBeers
     public static async Task<IResult>
     AddBeerToPub(Config config, int pubId, PubBeerCreate data)
     {
-        //
+
         //  HÄMTA BEER-ID (SAME AS ORIGINAL, FAST ASYNC)
-        //
+
         string queryBeer = "SELECT id FROM beers WHERE name = @name";
         int? beerId = null;
 
@@ -33,9 +33,9 @@ public static class PubBeers
         if (beerId is null)
             return Results.BadRequest("Beer does not exist");
 
-        //
+
         //  SKAPA KOPPLING PUB <-> BEER
-        //
+
         string insert = """
             INSERT INTO pub_beers (pub_id, beer_id, price_per_liter)
             VALUES (@pub, @beer, @price)
