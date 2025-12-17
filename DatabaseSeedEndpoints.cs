@@ -15,6 +15,18 @@ public static class DatabaseSeedEndpoints
 
         //
         // ======================================================
+        // 0. USERS (admin + testanvändare)
+        // ======================================================
+        //
+        await MySqlHelper.ExecuteNonQueryAsync(conn, """
+            INSERT INTO users (email, password, name, role) VALUES
+            ('admin@beertravels.se', 'admin123', 'Admin User', 'admin'),
+            ('user@beertravels.se', 'user123', 'Test User', 'traveler'),
+            ('test@test.se', 'test123', 'Test Person', 'traveler');
+        """);
+
+        //
+        // ======================================================
         // 1. CITIES
         // ======================================================
         //
@@ -53,8 +65,75 @@ public static class DatabaseSeedEndpoints
 
         //
         // ======================================================
+        // 2.5 ROOMS (rumstyper för varje hotell)
+        // ======================================================
+        //
+        await MySqlHelper.ExecuteNonQueryAsync(conn, """
+            INSERT INTO rooms (hotel_id, room_type, capacity, price_per_night, total_rooms) VALUES
+            -- Stockholm (hotel_id = 1)
+            (1, 'Single', 1, 890.00, 10),
+            (1, 'Double', 2, 1290.00, 15),
+            (1, 'Suite', 4, 2490.00, 5),
+            
+            -- Göteborg (hotel_id = 2)
+            (2, 'Single', 1, 790.00, 8),
+            (2, 'Double', 2, 1190.00, 12),
+            (2, 'Suite', 4, 2290.00, 4),
+            
+            -- Malmö (hotel_id = 3)
+            (3, 'Single', 1, 750.00, 10),
+            (3, 'Double', 2, 1090.00, 15),
+            (3, 'Suite', 4, 1990.00, 3),
+            
+            -- Uppsala (hotel_id = 4)
+            (4, 'Single', 1, 690.00, 6),
+            (4, 'Double', 2, 990.00, 10),
+            (4, 'Family', 5, 1590.00, 4),
+            
+            -- Västerås (hotel_id = 5)
+            (5, 'Single', 1, 650.00, 8),
+            (5, 'Double', 2, 950.00, 12),
+            
+            -- Örebro (hotel_id = 6)
+            (6, 'Single', 1, 650.00, 6),
+            (6, 'Double', 2, 950.00, 10),
+            (6, 'Suite', 4, 1790.00, 2),
+            
+            -- Linköping (hotel_id = 7)
+            (7, 'Single', 1, 690.00, 8),
+            (7, 'Double', 2, 1050.00, 10),
+            
+            -- Helsingborg (hotel_id = 8)
+            (8, 'Single', 1, 720.00, 6),
+            (8, 'Double', 2, 1090.00, 8),
+            (8, 'Suite', 4, 1890.00, 3),
+            
+            -- Jönköping (hotel_id = 9)
+            (9, 'Single', 1, 650.00, 8),
+            (9, 'Double', 2, 990.00, 10),
+            
+            -- Norrköping (hotel_id = 10)
+            (10, 'Single', 1, 620.00, 6),
+            (10, 'Double', 2, 920.00, 8),
+            (10, 'Family', 5, 1490.00, 3);
+        """);
+
+        //                   Flavors
+        await MySqlHelper.ExecuteNonQueryAsync(conn, """  
+            INSERT INTO flavors (name) VALUES  
+            ('Humle'),  
+            ('Söt'),  
+            ('Sur'),  
+            ('Bitter'),  
+            ('Maltig');  
+        """);
+
+
+
+
+        //
+        // ======================================================
         // 3. PUBS  (FK → city_id)
-        // Endast 3 pubbar per stad här (ren fil). Vill du ha 10/stad → jag gör SeedData.cs åt dig.
         // ======================================================
         //
         await MySqlHelper.ExecuteNonQueryAsync(conn, """
@@ -75,23 +154,23 @@ public static class DatabaseSeedEndpoints
             (3, 'Green Lion Inn', 'Norra Vallgatan 38', 350, '11:00', '01:00'),
 
             -- Uppsala
-            (4, 'O’Connor’s', 'Stora Torget 1', 200, '11:00', '01:00'),
+            (4, 'O''Connors', 'Stora Torget 1', 200, '11:00', '01:00'),
             (4, 'Taps Beer Bar', 'Sankt Olofsgatan 33', 350, '11:00', '01:00'),
             (4, 'Stationen', 'Olof Palmes Plats 6', 450, '11:00', '01:00'),
 
             -- Västerås
             (5, 'The Bishops Arms Västerås', 'Kungsgatan 5', 200, '11:00', '01:00'),
-            (5, 'Pitcher’s Västerås', 'Stora Gatan 46', 250, '11:00', '01:00'),
+            (5, 'Pitcher''s Västerås', 'Stora Gatan 46', 250, '11:00', '01:00'),
             (5, 'P2 Pub', 'Stora gatan 32', 280, '11:00', '01:00'),
 
             -- Örebro
             (6, 'Sörby Pub', 'Sörbyvägen 12', 600, '11:00', '01:00'),
             (6, 'Rosengrens Skafferi Pub', 'Kungsgatan 2', 300, '11:00', '01:00'),
-            (6, 'O’Learys Örebro', 'Stortorget 8', 400, '11:00', '01:00'),
+            (6, 'O''Learys Örebro', 'Stortorget 8', 400, '11:00', '01:00'),
 
             -- Linköping
-            (7, 'Pitcher’s Linköping', 'Ågatan 39', 250, '11:00', '01:00'),
-            (7, 'John Scott’s Linköping', 'Stora torget 3', 350, '11:00', '01:00'),
+            (7, 'Pitcher''s Linköping', 'Ågatan 39', 250, '11:00', '01:00'),
+            (7, 'John Scott''s Linköping', 'Stora torget 3', 350, '11:00', '01:00'),
             (7, 'De Klomp', 'Sankt Larsgatan 13', 400, '11:00', '01:00'),
 
             -- Helsingborg
@@ -138,6 +217,16 @@ public static class DatabaseSeedEndpoints
             ('Staropramen', 'Lager'),
             ('Carlsberg Hof', 'Lager');
         """);
+        // SEED: Koppla öl till smaker
+        await MySqlHelper.ExecuteNonQueryAsync(conn, """  
+            INSERT INTO beer_flavors (beer_id, flavor_id) VALUES  
+            (1, 1), (1, 5),   -- Brooklyn Lager: Humle, Maltig  
+            (2, 1), (2, 4),   -- Staropramen: Humle, Bitter  
+            (3, 5), (3, 2),   -- Guinness Draught: Maltig, Söt  
+            (4, 3), (4, 2),   -- Hoegaarden: Sur, Söt  
+            (5, 1), (5, 4), (5, 2);  -- Strongbow: Humle, Bitter, Söt  
+        """);
+
 
         //
         // ======================================================
