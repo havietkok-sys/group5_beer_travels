@@ -7,6 +7,9 @@ class beer_flavors
     // Record för att lagra smakdata
     public record Beer_Flavor_Data(int Id, string Name);
 
+    // Record för att skapa ny smak (tar emot JSON)
+    public record FlavorCreate(string Name);
+
     // Hämta alla smaker
     public static async Task<List<Beer_Flavor_Data>> GetAllFlavors(Config config)
     {
@@ -28,23 +31,23 @@ class beer_flavors
         return flavors;
     }
 
-    // Skapa ny smak
-    public static async Task<Beer_Flavor_Data?> CreateFlavor(Config config, string name)
+    // Skapa ny smak (tar emot JSON)
+    public static async Task<IResult> CreateFlavor(Config config, FlavorCreate data)
     {
-        if (string.IsNullOrWhiteSpace(name))
-            return null;
+        if (string.IsNullOrWhiteSpace(data.Name))
+            return Results.BadRequest("Namn krävs");
 
         await MySqlHelper.ExecuteNonQueryAsync(
             config.ConnectionString,
             "INSERT INTO flavors (name) VALUES (@name)",
-            new MySqlParameter("@name", name));
+            new MySqlParameter("@name", data.Name));
 
         var result = await MySqlHelper.ExecuteScalarAsync(
             config.ConnectionString,
             "SELECT LAST_INSERT_ID()");
 
         int newId = Convert.ToInt32(result);
-        return new Beer_Flavor_Data(newId, name);
+        return Results.Ok(new Beer_Flavor_Data(newId, data.Name));
     }
 
     // Ta bort smak
